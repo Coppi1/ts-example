@@ -1,14 +1,8 @@
+import { Sequelize } from "sequelize"; // Use sequelize ao invés de @sequelize/core
 
-import { MySqlDialect } from '@sequelize/mysql';
-import { Sequelize } from '@sequelize/core';
-
-const sequelize = new Sequelize({
-    dialect: MySqlDialect,
-    database: 'bd_ts_example',
-    user: 'root',
-    password: '1234',
-    host: 'localhost',
-    port: 3306,
-  });
+const sequelize = new Sequelize("bd_ts_example", "root", "1234", {
+  host: "localhost",
+  dialect: "mysql", // Aqui você pode usar 'mysql'
+});
 
 export default sequelize;

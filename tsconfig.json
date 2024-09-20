@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2017",                      // Compila para JavaScript ES6
-    "module": "commonjs",                 // Usa CommonJS, que é o sistema de módulos usado pelo Node.js
-    "outDir": "./dist",                   // Diretório onde os arquivos compilados serão colocados
-    "rootDir": "./src",                   // Diretório raiz do código TypeScript
-    "strict": true,                       // Ativa todas as verificações estritas
-    "esModuleInterop": true,             // Habilita a interoperabilidade entre módulos ES e CommonJS
-    "skipLibCheck": true,                // Pular verificação de tipos em arquivos de declaração (.d.ts)
+    "target": "ES6", // Compila para JavaScript ES6
+    "module": "ESNext", // Usa ESNext para trabalhar com import/export modernos
+    "outDir": "./dist", // Diretório onde os arquivos compilados serão colocados
+    "rootDir": "./src", // Diretório raiz do código TypeScript
+    "strict": true, // Ativa todas as verificações estritas
+    "esModuleInterop": true, // Habilita a interoperabilidade entre módulos ES e CommonJS
+    "moduleResolution": "node", // Resolve módulos do node
+    "skipLibCheck": true, // Pular verificação de tipos em arquivos de declaração (.d.ts)
     "forceConsistentCasingInFileNames": true // Garante consistência na capitalização de nomes de arquivos
   },
-  "include": ["src/**/*"],                // Inclui todos os arquivos TypeScript dentro do diretório src
-  "exclude": ["node_modules"]             // Exclui o diretório node_modules
+  "include": ["src/**/*.ts"], // Inclui todos os arquivos TypeScript dentro do diretório src
+  "exclude": ["node_modules"] // Exclui o diretório node_modules
 }
