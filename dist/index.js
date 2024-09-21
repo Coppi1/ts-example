@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,26 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import express from "express";
-// import contratanteRoutes from "./routes/contratante-routes.js";
-import sequelize from "./shared/connection.js";
-// import { Contratante } from "./models/contratante-model.js"; // it's not been used but it's necessary
-const app = express();
-app.use(express.json());
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const contratante_routes_js_1 = __importDefault(require("./routes/contratante-routes.js")); // Importando as rotas
+const connection_js_1 = __importDefault(require("./shared/connection.js"));
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
 const PORT = 3000;
-//routes here...
+// Rotas
 app.get("/", (req, res) => {
-    res.status(200).send("UNIFIO Nodejs API now using ts");
+    res.status(200).send("UNIFIO Nodejs API now using TypeScript");
 });
-//app.use("/", contratanteRoutes);
+// Usando as rotas do contratante
+app.use("/", contratante_routes_js_1.default);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("Server is running on port ", PORT);
         // Testar a conexão
-        yield sequelize.authenticate();
+        yield connection_js_1.default.authenticate();
         console.log("Database connected successfully.");
         // Sincronizar os modelos com o banco de dados
-        yield sequelize.sync(); // Sincroniza os modelos
+        yield connection_js_1.default.sync(); // Sincroniza os modelos
         console.log("Models synchronized with the database.");
         // Iniciar o servidor
         app.listen(PORT, () => {
@@ -41,4 +45,4 @@ app.get("/", (req, res) => {
 // Easier Debugging: Centralized connection and synchronization logic make it easier to handle errors and debug issues related to database connectivity.
 // Scalability: By not calling sync() inside each model file, you make it easier to scale the app when adding more models or handling more complex database interactions.
 // This version improves both the maintainability and readability of your project.
-export default app;
+exports.default = app;

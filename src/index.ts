@@ -1,27 +1,22 @@
 import express from "express";
-import { Sequelize } from "sequelize";
-
-// import contratanteRoutes from "./routes/contratante-routes.js";
-
+import contratanteRoutes from "./routes/contratante-routes.js"; // Importando as rotas
 import sequelize from "./shared/connection.js";
 
-// import { Contratante } from "./models/contratante-model.js"; // it's not been used but it's necessary
 const app = express();
-
 app.use(express.json());
 
 const PORT = 3000;
 
-//routes here...
+// Rotas
 app.get("/", (req, res) => {
-  res.status(200).send("UNIFIO Nodejs API now using ts");
+  res.status(200).send("UNIFIO Nodejs API now using TypeScript");
 });
 
-//app.use("/", contratanteRoutes);
+// Usando as rotas do contratante
+app.use("/", contratanteRoutes);
 
 (async () => {
   try {
-    console.log("Server is running on port ", PORT);
     // Testar a conexão
     await sequelize.authenticate();
     console.log("Database connected successfully.");
@@ -38,6 +33,7 @@ app.get("/", (req, res) => {
     console.error("Unable to connect to the database:", error);
   }
 })();
+
 // Cleaner Code: Separating database connection and synchronization from the model file keeps the model focused on defining data structure.
 // Easier Debugging: Centralized connection and synchronization logic make it easier to handle errors and debug issues related to database connectivity.
 // Scalability: By not calling sync() inside each model file, you make it easier to scale the app when adding more models or handling more complex database interactions.
