@@ -90,4 +90,25 @@ export class ClientController {
         .json({ message: "Failed to delete client", error });
     }
   }
+
+  // ClientController.ts
+
+  public async getClientBalance(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    try {
+      const { id } = req.params;
+      const balance = await this.clientService.getBalanceById(Number(id));
+      if (balance !== null) {
+        return res.status(200).json({ balance });
+      } else {
+        return res.status(404).json({ message: "Client not found" });
+      }
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Failed to fetch balance", error });
+    }
+  }
 }

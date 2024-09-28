@@ -83,4 +83,18 @@ export class ClientService {
       throw new Error(`Unable to delete client`);
     }
   }
+
+  public async getBalanceById(id: number): Promise<number | null> {
+    try {
+      const client = await Client.findByPk(id, {
+        attributes: ["balance"],
+      });
+      if (client) {
+        return client.balance;
+      }
+      return null;
+    } catch (error) {
+      throw new Error(`Unable to fetch balance for client with ID ${id}`);
+    }
+  }
 }

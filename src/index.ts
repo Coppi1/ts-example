@@ -1,6 +1,11 @@
 import express from "express";
-import contratanteRoutes from "./routes/contratante-routes.js"; // Importando as rotas
-import sequelize from "./shared/connection.js";
+import clientRoutes from "./routes/clientRoutes";
+import contractRoutes from "./routes/contractRoutes";
+import contractorRoutes from "./routes/contractorRoutes";
+import depositRoutes from "./routes/depositRoutes";
+import jobRoutes from "./routes/jobRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
+import sequelize from "./shared/connection";
 
 const app = express();
 app.use(express.json());
@@ -13,7 +18,12 @@ app.get("/", (req, res) => {
 });
 
 // Usando as rotas do contratante
-app.use("/", contratanteRoutes);
+app.use("/", clientRoutes);
+app.use("/", contractRoutes);
+app.use("/", contractorRoutes);
+app.use("/", depositRoutes);
+app.use("/", jobRoutes);
+app.use("/", paymentRoutes);
 
 (async () => {
   try {

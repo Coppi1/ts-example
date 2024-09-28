@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext", // Compila para JavaScript ES6
-    "module": "ES6", // Usa ESNext para trabalhar com import/export modernos
+    "module": "ESNext", // Usa ESNext para trabalhar com import/export modernos
     "outDir": "./dist", // Diretório onde os arquivos compilados serão colocados
     "rootDir": "./src", // Diretório raiz do código TypeScript
     "strict": true, // Ativa todas as verificações estritas
@@ -10,6 +10,6 @@
     "skipLibCheck": true, // Pular verificação de tipos em arquivos de declaração (.d.ts)
     "forceConsistentCasingInFileNames": true // Garante consistência na capitalização de nomes de arquivos
   },
-  "include": ["src/**/*"], // Inclui todos os arquivos TypeScript dentro do diretório src
+  "include": ["src/**/*.ts"], // Inclui todos os arquivos TypeScript dentro do diretório src
   "exclude": ["node_modules"] // Exclui o diretório node_modules
 }
