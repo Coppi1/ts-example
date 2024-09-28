@@ -1,7 +1,7 @@
-import { Op, Optional } from "sequelize";
+import { Optional, QueryTypes } from "sequelize";
 import Job from "../models/Job";
 import Payment from "../models/Payment";
-import sequelize from "../shared/connection"; // Certifique-se de que o caminho está correto
+import sequelize from "../shared/connection";
 
 // Definir atributos do modelo
 interface JobAttributes {
@@ -45,39 +45,56 @@ export class JobRepository {
     }
   }
 
+  // public async getUnpaidJobsTotal(): Promise<number> {
+  //   try {
+  //     const jobs = await Job.findAll({
+  //       where: { paid: true },
+  //       include: [
+  //         {
+  //           model: Payment,
+  //           where: {
+  //             paymentValue: {
+  //               [Op.lt]: sequelize.col("Job.price"),
+  //             },
+  //           },
+  //           required: false,
+  //         },
+  //       ],
+  //     });
+
+  //     const total = jobs.reduce((acc: number, job: Job) => {
+  //       const jobPayments = job.Payments || [];
+  //       const unpaidPayments = jobPayments.filter(
+  //         (payment) => payment.paymentValue < job.price
+  //       );
+
+  //       return (
+  //         acc +
+  //         unpaidPayments.reduce((sum, payment) => sum + payment.paymentValue, 0)
+  //       );
+  //     }, 0);
+
+  //     return total;
+  //   } catch (error) {
+  //     throw new Error(
+  //       `Unable to fetch unpaid jobs total: ${(error as Error).message}`
+  //     );
+  //   }
+  // }
   public async getUnpaidJobsTotal(): Promise<number> {
     try {
-      // Encontre todos os jobs pagos e calcule a soma dos pagamentos relacionados
-      const jobs = await Job.findAll({
-        where: { paid: true }, // Filtra jobs que estão pagos
-        include: [
-          {
-            model: Payment,
-            where: {
-              paymentValue: {
-                [Op.lt]: sequelize.col("Job.price"), // Comparar com o preço do Job
-              },
-            },
-            required: false,
-          },
-        ],
-      });
+      // Execute a query e tipifique o resultado
+      const [result] = await sequelize.query<{ total: number }>(
+        `
+        SELECT SUM(p.payment_value) AS total
+        FROM payment p
+        JOIN job j ON j.id = p.job_id
+        WHERE p.payment_value < j.price AND j.paid = true
+      `,
+        { type: QueryTypes.SELECT }
+      );
 
-      // Calcule o total dos pagamentos não pagos
-      const total = jobs.reduce((acc: number, job: Job) => {
-        // Corrigindo o acesso aos pagamentos
-        const jobPayments = job.Payments || []; // Use o correto tipo Job
-        const unpaidPayments = jobPayments.filter(
-          (payment) => payment.paymentValue < job.price // Não precisa do tipo Payment aqui
-        );
-
-        return (
-          acc +
-          unpaidPayments.reduce((sum, payment) => sum + payment.paymentValue, 0) // Não precisa do tipo Payment aqui
-        );
-      }, 0);
-
-      return total;
+      return result?.total || 0; // Retorne 0 se não houver pagamentos
     } catch (error) {
       throw new Error(
         `Unable to fetch unpaid jobs total: ${(error as Error).message}`
