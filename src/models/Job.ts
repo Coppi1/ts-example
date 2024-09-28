@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../shared/connection";
+import Payment from "./Payment";
 
 class Job extends Model {
   public id!: number;
@@ -8,6 +9,7 @@ class Job extends Model {
   public dueDate!: Date;
   public price!: number;
   public paid!: boolean;
+  public Payments?: Payment[];
 }
 
 Job.init(

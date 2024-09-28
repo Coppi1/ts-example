@@ -1,6 +1,13 @@
 import Job from "../models/Job";
+import { JobRepository } from "../repositories/jobRepository";
 
 export class JobService {
+  private jobRepository: JobRepository;
+
+  constructor() {
+    this.jobRepository = new JobRepository();
+  }
+
   public async createJob(
     contractId: number,
     description: string,
@@ -80,5 +87,8 @@ export class JobService {
     } catch (error) {
       throw new Error(`Unable to delete job`);
     }
+  }
+  public async getUnpaidJobsTotal(): Promise<number> {
+    return await this.jobRepository.getUnpaidJobsTotal();
   }
 }

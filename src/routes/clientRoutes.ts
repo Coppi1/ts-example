@@ -16,4 +16,8 @@ router.delete("/client/:id", (req, res) =>
   clientController.deleteClient(req, res)
 );
 
+router.get("/clients/:id/balance", (req, res) =>
+  clientController.getClientBalance(req, res)
+);
+
 export default router;

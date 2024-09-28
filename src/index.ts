@@ -1,4 +1,5 @@
 import express from "express";
+import "./models/associations";
 import clientRoutes from "./routes/clientRoutes";
 import contractRoutes from "./routes/contractRoutes";
 import contractorRoutes from "./routes/contractorRoutes";
