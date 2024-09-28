@@ -9,7 +9,7 @@ const PORT = 3000;
 
 // Rotas
 app.get("/", (req, res) => {
-  res.status(200).send("UNIFIO Nodejs API now using TypeScript");
+  res.status(200).send("API server ON");
 });
 
 // Usando as rotas do contratante

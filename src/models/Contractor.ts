@@ -1,29 +1,29 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../shared/connection";
 
-class Contratante extends Model {
+class Contractor extends Model {
   public id!: number;
-  public nomeCompleto!: string;
+  public nome!: string;
 }
 
-Contratante.init(
+Contractor.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    nomeCompleto: {
+    nome: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    modelName: "Contratante",
-    tableName: "contratante",
-    underscored: true, // Usa nomes de colunas com underscores (por padrão)
+    modelName: "Contractor",
+    tableName: "contractor",
+    underscored: true,
   }
 );
 
-export default Contratante;
+export default Contractor;
