@@ -98,4 +98,21 @@ export class JobController {
         .json({ message: "Failed to fetch unpaid jobs total", error });
     }
   }
+
+   //
+   public async getJobsByContractId(req: Request, res: Response): Promise<Response> {
+    try {
+      const { contractId } = req.params; // Captura o contractId da URL
+      const jobs = await this.jobService.getJobsByContractId(Number(contractId)); // Chama o serviço com contractId
+      if (jobs.length > 0) {
+        return res.status(200).json(jobs);
+      } else {
+        return res.status(404).json({ message: "No jobs found for this contract" });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to fetch jobs", error });
+    }
+  }
 }
+
+

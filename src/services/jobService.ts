@@ -91,4 +91,18 @@ export class JobService {
   public async getUnpaidJobsTotal(): Promise<number> {
     return await this.jobRepository.getUnpaidJobsTotal();
   }
+
+  public async getJobsByContractId(contractId: number): Promise<Job[]> {
+    try {
+      return await Job.findAll({
+        where: { contractId },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Unable to fetch jobs: ${error.message}`);
+      } else {
+        throw new Error("An unknown error occurred.");
+      }
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import Client from "../models/Client";
+import Job from "../models/Job";
 
 export class ClientService {
   public async createClient(
@@ -88,6 +89,7 @@ export class ClientService {
     try {
       const client = await Client.findByPk(id, {
         attributes: ["balance"],
+        raw: true,
       });
       if (client) {
         return client.balance;
@@ -97,4 +99,6 @@ export class ClientService {
       throw new Error(`Unable to fetch balance for client with ID ${id}`);
     }
   }
-}
+
+  }
+

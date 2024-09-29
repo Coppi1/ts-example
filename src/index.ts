@@ -26,6 +26,7 @@ app.use("/", depositRoutes);
 app.use("/", jobRoutes);
 app.use("/", paymentRoutes);
 
+
 (async () => {
   try {
     // Testar a conexão
