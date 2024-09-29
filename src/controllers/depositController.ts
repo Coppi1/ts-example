@@ -8,22 +8,6 @@ export class DepositController {
     this.depositService = new DepositService();
   }
 
-  public async createDeposit(req: Request, res: Response): Promise<Response> {
-    try {
-      const { clientId, operation, value } = req.body;
-      const newDeposit = await this.depositService.createDeposit(
-        clientId,
-        operation,
-        value
-      );
-      return res.status(201).json(newDeposit);
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Failed to create deposit", error });
-    }
-  }
-
   public async getAllDeposits(req: Request, res: Response): Promise<Response> {
     try {
       const deposits = await this.depositService.getAllDeposits();
@@ -86,6 +70,26 @@ export class DepositController {
       return res
         .status(500)
         .json({ message: "Failed to delete deposit", error });
+    }
+  }
+
+  public async makeDeposit(req: Request, res: Response): Promise<Response> {
+    try {
+      const { clientId, value } = req.body;
+
+      // Chama o método makeDeposit do serviço
+      await this.depositService.makeDeposit(clientId, value);
+
+      // Retorna sucesso se a operação for concluída
+      return res
+        .status(201)
+        .json({ message: "Deposit created and balance updated" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        message: "Error processing deposit",
+        error: (error as Error).message,
+      });
     }
   }
 }
