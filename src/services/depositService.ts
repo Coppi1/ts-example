@@ -1,4 +1,6 @@
+import Client from "../models/Client";
 import Deposit from "../models/Deposit";
+import sequelize from "../shared/connection";
 
 export class DepositService {
   public async createDeposit(
@@ -69,6 +71,96 @@ export class DepositService {
       return false;
     } catch (error) {
       throw new Error(`Unable to delete deposit`);
+    }
+  }
+
+  // public async makeDeposit(
+  //   clientId: number,
+  //   depositValue: number
+  // ): Promise<void> {
+  //   const transaction = await sequelize.transaction();
+
+  //   try {
+  //     if (depositValue <= 0) {
+  //       throw new Error("Deposit value must be positive");
+  //     }
+
+  //     const client = await Client.findByPk(clientId, { transaction });
+
+  //     console.log(client, "Cliente puxado by pk");
+
+  //     if (!client) {
+  //       throw new Error("Client not found");
+  //     }
+
+  //     await Deposit.create(
+  //       {
+  //         clientId,
+  //         operation: new Date(),
+  //         value: depositValue,
+  //       },
+  //       { transaction }
+  //     );
+
+  //     client.balance += depositValue;
+
+  //     console.log(
+  //       `Updating client balance from ${client.balance - depositValue} to ${
+  //         client.balance
+  //       }`
+  //     );
+
+  //     await client.save({ transaction });
+
+  //     await transaction.commit();
+  //   } catch (error) {
+  //     await transaction.rollback();
+  //     throw new Error(`Deposit failed: ${(error as Error).message}`);
+  //   }
+  // }
+
+  public async makeDeposit(
+    clientId: number,
+    depositValue: number
+  ): Promise<void> {
+    const transaction = await sequelize.transaction();
+
+    try {
+      if (depositValue <= 0) {
+        throw new Error("Deposit value must be positive");
+      }
+
+      const client = await Client.findByPk(clientId, { transaction });
+
+      console.log(client?.dataValues, "Cliente puxado by pk");
+
+      if (!client) {
+        throw new Error("Client not found");
+      }
+
+      await Deposit.create(
+        {
+          clientId,
+          operation: new Date(),
+          value: depositValue,
+        },
+        { transaction }
+      );
+
+      const [result] = await sequelize.query(
+        `UPDATE client 
+         SET balance = balance + :depositValue 
+         WHERE id = :clientId`,
+        {
+          replacements: { depositValue, clientId },
+          transaction,
+        }
+      );
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new Error(`Deposit failed: ${(error as Error).message}`);
     }
   }
 }

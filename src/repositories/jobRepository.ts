@@ -45,45 +45,8 @@ export class JobRepository {
     }
   }
 
-  // public async getUnpaidJobsTotal(): Promise<number> {
-  //   try {
-  //     const jobs = await Job.findAll({
-  //       where: { paid: true },
-  //       include: [
-  //         {
-  //           model: Payment,
-  //           where: {
-  //             paymentValue: {
-  //               [Op.lt]: sequelize.col("Job.price"),
-  //             },
-  //           },
-  //           required: false,
-  //         },
-  //       ],
-  //     });
-
-  //     const total = jobs.reduce((acc: number, job: Job) => {
-  //       const jobPayments = job.Payments || [];
-  //       const unpaidPayments = jobPayments.filter(
-  //         (payment) => payment.paymentValue < job.price
-  //       );
-
-  //       return (
-  //         acc +
-  //         unpaidPayments.reduce((sum, payment) => sum + payment.paymentValue, 0)
-  //       );
-  //     }, 0);
-
-  //     return total;
-  //   } catch (error) {
-  //     throw new Error(
-  //       `Unable to fetch unpaid jobs total: ${(error as Error).message}`
-  //     );
-  //   }
-  // }
   public async getUnpaidJobsTotal(): Promise<number> {
     try {
-      // Execute a query e tipifique o resultado
       const [result] = await sequelize.query<{ total: number }>(
         `
         SELECT SUM(p.payment_value) AS total
@@ -94,7 +57,7 @@ export class JobRepository {
         { type: QueryTypes.SELECT }
       );
 
-      return result?.total || 0; // Retorne 0 se não houver pagamentos
+      return result?.total || 0;
     } catch (error) {
       throw new Error(
         `Unable to fetch unpaid jobs total: ${(error as Error).message}`

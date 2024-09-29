@@ -36,6 +36,7 @@ Client.init(
     balance: {
       type: DataTypes.DOUBLE,
       allowNull: false,
+      defaultValue: 0,
     },
   },
   {
@@ -43,6 +44,7 @@ Client.init(
     modelName: "Client",
     tableName: "client",
     underscored: true,
+    timestamps: true,
   }
 );
 
