@@ -52,7 +52,7 @@ export class JobRepository {
         SELECT SUM(p.payment_value) AS total
         FROM payment p
         JOIN job j ON j.id = p.job_id
-        WHERE p.payment_value < j.price AND j.paid = true
+        WHERE p.payment_value < j.price AND j.paid = false
       `,
         { type: QueryTypes.SELECT }
       );

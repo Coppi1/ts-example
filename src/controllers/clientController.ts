@@ -93,7 +93,8 @@ export class ClientController {
   public async getClientBalance(req: Request, res: Response): Promise<void> {
     try {
       const id = parseInt(req.params.id, 10);
-      const balance = await this.clientService.getBalanceById(id);
+      // const balance = await this.clientService.getBalanceById(id);
+      const balance = id;
       if (balance !== null) {
         res.status(200).json({ balance });
       } else {
