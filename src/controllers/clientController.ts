@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { connectRedis, client as redisClient } from "../config/redisClient";
 import { ClientService } from "../services/clientService";
 
 export class ClientController {
@@ -11,6 +12,17 @@ export class ClientController {
   public async createClient(req: Request, res: Response): Promise<Response> {
     try {
       const { firstName, lastName, profession, type, balance } = req.body;
+      const clientKey = `client:${firstName}:${lastName}`; // Chave única para o cliente no cache
+
+      await connectRedis();
+
+      // Tenta recuperar os dados
+      const cachedClient = await redisClient.get(clientKey);
+      if (cachedClient) {
+        return res.status(200).json(JSON.parse(cachedClient));
+      }
+
+      // Cria o cliente se não achar
       const newClient = await this.clientService.createClient(
         firstName,
         lastName,
@@ -18,6 +30,12 @@ export class ClientController {
         type,
         balance
       );
+
+      // Armazena o cliente no cache Redis
+      await redisClient.set(clientKey, JSON.stringify(newClient), {
+        EX: 3600, // tempo de expiração em segundos (1 hora)
+      });
+
       return res.status(201).json(newClient);
     } catch (error) {
       return res
@@ -28,7 +46,19 @@ export class ClientController {
 
   public async getAllClients(req: Request, res: Response): Promise<Response> {
     try {
+      const cacheKey = "clients";
+      // Tenta recuperar os dados do Redis
+      const cachedData = await redisClient.get(cacheKey);
+      if (cachedData) {
+        return res.status(200).json(JSON.parse(cachedData)); // retorna cache
+      }
+
+      // Caso não tenha cache, faz a consulta ao banco de dados
       const clients = await this.clientService.getAllClients();
+
+      // Armazena o resultado no cache, com um tempo de expiração de 60 segundos
+      await redisClient.setEx(cacheKey, 60, JSON.stringify(clients));
+
       return res.status(200).json(clients);
     } catch (error) {
       return res
