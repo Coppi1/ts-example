@@ -1,6 +1,23 @@
 import { Request, Response } from "express";
 import { connectRedis, client as redisClient } from "../config/redisClient";
 import { ClientService } from "../services/clientService";
+import multer from "multer";
+import csv from "csv-parser";
+import xlsx from "xlsx";
+import fs from "fs";
+import Client from "../models/Client";
+import path from 'path';
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads/'); // Pasta onde o arquivo será armazenado
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nome único para o arquivo
+  }
+});
+
+
 
 export class ClientController {
   private clientService: ClientService;
@@ -132,6 +149,148 @@ export class ClientController {
       }
     } catch (error) {
       res.status(500).json({ message: "Error fetching balance" });
+    }
+  }
+
+  // public async uploadClientFile(
+  //   req: Request,
+  //   res: Response
+  // ): Promise<Response> {
+  //   if (!req.file) {
+  //     return res.status(400).json({ message: "No file uploaded" });
+  //   }
+
+  //   try {
+  //     const clientsData: any[] = [];
+  //     const filePath = req.file.path;
+
+  //     // verificação do tipo de arquivo (CSV ou XLSX)
+  //     if (req.file.mimetype === "text/csv") {
+  //       // Processa o arquivo CSV
+  //       return new Promise<Response>((resolve, reject) => {
+  //         fs.createReadStream(filePath)
+  //           .pipe(csv())
+  //           .on("data", (row) => {
+  //             clientsData.push(row);
+  //           })
+  //           .on("end", async () => {
+  //             try {
+  //               // Após terminar de processar o arquivo CSV, armazena os dados e responde
+  //               await this.storeClientsData(clientsData);
+  //               fs.unlinkSync(filePath); // Remove o arquivo temporário após o processamento
+  //               resolve(
+  //                 res
+  //                   .status(200)
+  //                   .json({ message: "Clients imported successfully" })
+  //               );
+  //             } catch (error) {
+  //               reject(error);
+  //             }
+  //           })
+  //           .on("error", (error) => {
+  //             fs.unlinkSync(filePath); // Remove o arquivo temporário em caso de erro
+  //             reject(error);
+  //           });
+  //       });
+  //     } else if (
+  //       req.file.mimetype ===
+  //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+  //       req.file.mimetype === "application/vnd.ms-excel"
+  //     ) {
+  //       // Processa o arquivo XLSX
+  //       const workbook = xlsx.readFile(filePath);
+  //       const sheetName = workbook.SheetNames[0];
+  //       const sheet = workbook.Sheets[sheetName];
+  //       const data = xlsx.utils.sheet_to_json(sheet);
+  //       await this.storeClientsData(data as any[]);
+  //       fs.unlinkSync(filePath); // Remove o arquivo temporário após o processamento
+  //       return res
+  //         .status(200)
+  //         .json({ message: "Clients imported successfully" });
+  //     } else {
+  //       fs.unlinkSync(filePath); // Remove o arquivo temporário em caso de tipo inválido
+  //       return res.status(400).json({ message: "Unsupported file format" });
+  //     }
+  //   } catch (error) {
+  //     fs.unlinkSync(req.file.path); // Remove o arquivo temporário em caso de erro
+  //     return res.status(500).json({ message: "Error processing file", error });
+  //   }
+  // }
+
+  public async uploadClientFile(req: Request, res: Response): Promise<Response> {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const filePath = req.file.path;
+    const clientsData: any[] = [];
+
+    try {
+      // Verificação do tipo de arquivo (CSV ou XLSX)
+      if (req.file.mimetype === "text/csv") {
+        // Processa o arquivo CSV
+        await this.processCSV(filePath, clientsData);
+      } else if (
+        req.file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        req.file.mimetype === "application/vnd.ms-excel"
+      ) {
+        // Processa o arquivo XLSX
+        await this.processXLSX(filePath, clientsData);
+      } else {
+        fs.unlinkSync(filePath); // Remove o arquivo temporário em caso de tipo inválido
+        return res.status(400).json({ message: "Unsupported file format" });
+      }
+
+      // Armazenando os dados no banco
+      await this.storeClientsData(clientsData);
+
+      // Remover o arquivo temporário após o processamento
+      fs.unlinkSync(filePath);
+
+      return res.status(200).json({ message: "Clients imported successfully" });
+    } catch (error) {
+      fs.unlinkSync(filePath); // Remove o arquivo em caso de erro
+      return res.status(500).json({ message: "Error processing file", error });
+    }
+  }
+
+  // Método para processar arquivo CSV
+  private async processCSV(filePath: string, clientsData: any[]): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csv())
+        .on("data", (row) => {
+          clientsData.push(row);
+        })
+        .on("end", () => {
+          resolve();
+        })
+        .on("error", (error) => {
+          reject(error);
+        });
+    });
+  }
+
+  // Método para processar arquivo XLSX
+  private async processXLSX(filePath: string, clientsData: any[]): Promise<void> {
+    const workbook = xlsx.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(sheet);
+    clientsData.push(...data);
+  }
+
+  // Método auxiliar para salvar dados no banco de dados
+  private async storeClientsData(data: any[]): Promise<void> {
+    for (const row of data) {
+      const { firstName, lastName, profession, type, balance } = row;
+      await Client.create({
+        firstName,
+        lastName,
+        profession,
+        type,
+        balance: parseFloat(balance),
+      });
     }
   }
 }
