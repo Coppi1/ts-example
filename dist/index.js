@@ -7,9 +7,13 @@ import depositRoutes from './routes/depositRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import sequelize from './shared/connection.js';
+import dotenv from 'dotenv';
+// Carrega arquivo .env
+dotenv.config();
 const app = express();
 app.use(express.json());
-const PORT = 3000;
+//const PORT = 3000;
+const PORT = process.env.PORT;
 // Rotas
 app.get("/", (req, res) => {
     res.status(200).send("API server ON");

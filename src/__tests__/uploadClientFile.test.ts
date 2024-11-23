@@ -1,32 +1,39 @@
-import { Builder, By, until } from "selenium-webdriver";
-import * as path from "path";
-import "chromedriver";
+import request from 'supertest';
+import app from '../index'; 
+import path from 'path';
 
-(async function uploadClientFileTest() {
-  let driver = await new Builder().forBrowser("chrome").build();
-  try {
-    await driver.get("http://localhost:3000/client/upload"); // Ajuste a URL conforme necessário
+describe('ClientController - Upload Client File', () => {
 
-    // Caminho para o arquivo CSV de teste
-    const filePath = path.join(__dirname, "test_clients.csv");
+  //caso válido
+  it('should successfully upload and process a CSV file', async () => {
+    const filePath = path.join(__dirname, 'files', 'test_clients.xls'); 
 
-    // Encontra o input do arquivo e envia o caminho do arquivo
-    const fileInput = await driver.findElement(By.name("file"));
-    await fileInput.sendKeys(filePath);
+    const response = await request(app)
+      .post('/client/upload')
+      .attach('file', filePath);
 
-    // Clica no botão de submissão do formulário
-    const submitButton = await driver.findElement(By.css("button[type='submit']"));
-    await submitButton.click();
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Clients imported successfully');
+  });
 
-    // Aguarda pela mensagem de sucesso
-    const successMessageElement = await driver.wait(
-      until.elementLocated(By.css(".success-message")),
-      5000
-    );
+  //caso inválido
+  it('should return 400 if no file is uploaded', async () => {
+    const response = await request(app)
+      .post('/client/upload');
 
-    const successMessage = await successMessageElement.getText();
-    console.log(successMessage);
-  } finally {
-    await driver.quit();
-  }
-})();
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('No file uploaded');
+  });
+
+  //caso inválido
+  it('should return 400 for unsupported file format', async () => {
+    const filePath = path.join(__dirname, 'files', 'test_clients.txt'); 
+
+    const response = await request(app)
+      .post('/client/upload')
+      .attach('file', filePath);
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('Unsupported file format');
+  });
+});

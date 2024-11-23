@@ -1,0 +1,7 @@
+organization=coppi1
+projectKey=coppi1_tsexampletests
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.57796
+dashboardUrl=https://sonarcloud.io/dashboard?id=coppi1_tsexampletests
+ceTaskId=AZNHEuLQX8GAonPEzmM_
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZNHEuLQX8GAonPEzmM_

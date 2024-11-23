@@ -7,11 +7,16 @@ import depositRoutes from "./routes/depositRoutes";
 import jobRoutes from "./routes/jobRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
 import sequelize from "./shared/connection";
+import dotenv from 'dotenv';
+
+// Carrega arquivo .env
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-const PORT = 3000;
+//const PORT = 3000;
+const PORT = process.env.PORT
 
 // Rotas
 app.get("/", (req, res) => {
