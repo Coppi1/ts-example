@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express from "express";
 import "./models/associations";
 import clientRoutes from "./routes/clientRoutes";
@@ -8,17 +9,21 @@ import jobRoutes from "./routes/jobRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
 import sequelize from "./shared/connection";
 
+// Carrega arquivo .env
+dotenv.config();
+
 const app = express();
 app.use(express.json());
 
-const PORT = 3000;
+//const PORT = 3000;
+const PORT = process.env.PORT;
 
 // Rotas
 app.get("/", (req, res) => {
   res.status(200).send("API server ON");
 });
 
-// Usando as rotas do contratante
+// Usando as rotas
 app.use("/", clientRoutes);
 app.use("/", contractRoutes);
 app.use("/", contractorRoutes);
@@ -34,7 +39,7 @@ app.use("/", paymentRoutes);
     console.log("Database connected successfully.");
 
     // Sincronizar os modelos com o banco de dados
-    await sequelize.sync(); // Sincroniza os modelos
+    await sequelize.sync();
     console.log("Models synchronized with the database.");
 
     // Iniciar o servidor
@@ -46,9 +51,4 @@ app.use("/", paymentRoutes);
   }
 })();
 
-// Cleaner Code: Separating database connection and synchronization from the model file keeps the model focused on defining data structure.
-// Easier Debugging: Centralized connection and synchronization logic make it easier to handle errors and debug issues related to database connectivity.
-// Scalability: By not calling sync() inside each model file, you make it easier to scale the app when adding more models or handling more complex database interactions.
-
-// This version improves both the maintainability and readability of your project.
 export default app;

@@ -8,7 +8,8 @@
     "esModuleInterop": true, // Habilita a interoperabilidade entre módulos ES e CommonJS
     "moduleResolution": "node", // Resolve módulos do node
     "skipLibCheck": true, // Pular verificação de tipos em arquivos de declaração (.d.ts)
-    "forceConsistentCasingInFileNames": true // Garante consistência na capitalização de nomes de arquivos
+    "forceConsistentCasingInFileNames": true, // Garante consistência na capitalização de nomes de arquivos
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": ["src/**/*.ts"], // Inclui todos os arquivos TypeScript dentro do diretório src
   "exclude": ["node_modules"] // Exclui o diretório node_modules
