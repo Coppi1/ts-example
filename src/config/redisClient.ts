@@ -1,15 +1,23 @@
-import { createClient } from "redis";
+import { createClient, RedisClientType } from "redis";
 
-const client = createClient({
-  url: "redis://localhost:6379",
-});
+let redisClient: RedisClientType;
 
-client.on("error", (err) => console.error("Redis Client Error", err));
+if (process.env.NODE_ENV === "test") {
+  // para usar o mock no ambiente de teste
+  const RedisMock = require("ioredis-mock");
+  redisClient = new RedisMock();
+} else {
+  redisClient = createClient({
+    url: "redis://localhost:6379",
+  });
+
+  redisClient.on("error", (err) => console.error("Redis Client Error", err));
+}
 
 async function connectRedis() {
-  if (!client.isOpen) {
-    await client.connect();
+  if (!redisClient.isOpen) {
+    await redisClient.connect();
   }
 }
 
-export { client, connectRedis };
+export { connectRedis, redisClient };

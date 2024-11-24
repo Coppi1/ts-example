@@ -1,23 +1,22 @@
-import { Request, Response } from "express";
-import { connectRedis, client as redisClient } from "../config/redisClient";
-import { ClientService } from "../services/clientService";
-import multer from "multer";
 import csv from "csv-parser";
-import xlsx from "xlsx";
+import { Request, Response } from "express";
 import fs from "fs";
+import multer from "multer";
+import path from "path";
+import xlsx from "xlsx";
+import { connectRedis, redisClient } from "../config/redisClient";
 import Client from "../models/Client";
-import path from 'path';
+import { ClientService } from "../services/clientService";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads/'); // Pasta onde o arquivo será armazenado
+    const uploadPath = path.join(__dirname, "uploads", "clientFiles");
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nome único para o arquivo
-  }
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
 });
-
-
 
 export class ClientController {
   private clientService: ClientService;
@@ -152,7 +151,10 @@ export class ClientController {
     }
   }
 
-  public async uploadClientFile(req: Request, res: Response): Promise<Response> {
+  public async uploadClientFile(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
@@ -166,7 +168,8 @@ export class ClientController {
         // Processa o arquivo CSV
         await this.processCSV(filePath, clientsData);
       } else if (
-        req.file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        req.file.mimetype ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         req.file.mimetype === "application/vnd.ms-excel"
       ) {
         // Processa o arquivo XLSX
@@ -190,7 +193,10 @@ export class ClientController {
   }
 
   // Método para processar arquivo CSV
-  private async processCSV(filePath: string, clientsData: any[]): Promise<void> {
+  private async processCSV(
+    filePath: string,
+    clientsData: any[]
+  ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       fs.createReadStream(filePath)
         .pipe(csv())
@@ -207,7 +213,10 @@ export class ClientController {
   }
 
   // Método para processar arquivo XLSX
-  private async processXLSX(filePath: string, clientsData: any[]): Promise<void> {
+  private async processXLSX(
+    filePath: string,
+    clientsData: any[]
+  ): Promise<void> {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];

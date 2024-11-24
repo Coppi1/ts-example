@@ -1,45 +1,82 @@
+import fs from "fs";
+import path from "path";
+import SequelizeMock from "sequelize-mock";
 import request from "supertest";
 import app from "../index";
-import sequelize from "../shared/connection"; // Ajuste o caminho conforme necessário
+import Client from "../models/Client";
+import sequelize from "./../shared/connection";
 
-beforeAll(async () => {
-  await sequelize.authenticate(); // Conecta ao banco antes de iniciar os testes
+// Criando uma instância do mock do Sequelize
+const mockDB = new SequelizeMock();
+
+// Mockando o modelo 'Client'
+const MockClient = mockDB.define("Client", {
+  id: 1,
+  firstName: "John",
+  lastName: "Doe",
+  profession: "Developer",
+  type: "Premium",
+  balance: 100.0,
 });
 
-afterAll(async () => {
-  await sequelize.close(); // Fecha todas as conexões ao final dos testes
-});
+// Sobrescrevendo o método 'create' com o mock para evitar interação real com o banco de dados
+jest.spyOn(Client, "create").mockResolvedValue(
+  MockClient.build({
+    id: 1,
+    firstName: "John",
+    lastName: "Doe",
+    profession: "Developer",
+    type: "Premium",
+    balance: 100.0,
+  })
+);
 
 describe("ClientController - Upload Client File", () => {
-  // //caso válido
-  // it("should successfully upload and process a CSV file", async () => {
-  //   const filePath = path.join(__dirname, "files", "test_clients.xls");
+  // Before all tests, ensure Sequelize sync is complete
+  beforeAll(async () => {
+    await sequelize.sync(); // Certifique-se de que o banco de dados esteja sincronizado antes dos testes
+  });
 
-  //   const response = await request(app)
-  //     .post("/client/upload")
-  //     .attach("file", filePath);
+  // After all tests, close the Sequelize connection properly
+  afterAll(async () => {
+    await sequelize.close(); // Fecha a conexão com o banco de dados após todos os testes
+  });
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body.message).toBe("Clients imported successfully");
-  // });
+  // Teste com arquivo CSV
+  it("should successfully upload and process a CSV file", async () => {
+    const filePath = path.join(__dirname, "files", "test_clients.csv");
 
-  //caso inválido
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`O arquivo ${filePath} não foi encontrado!`);
+    }
+
+    const response = await request(app)
+      .post("/client/upload")
+      .attach("file", filePath); // Simula o upload do arquivo
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Clients imported successfully");
+  });
+
+  // Teste quando não há arquivo
   it("should return 400 if no file is uploaded", async () => {
     const response = await request(app).post("/client/upload");
-
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("No file uploaded");
   });
 
-  // //caso inválido
-  // it("should return 400 for unsupported file format", async () => {
-  //   const filePath = path.join(__dirname, "files", "test_clients.txt");
+  it("should successfully upload and process a XLS file", async () => {
+    const filePath = path.join(__dirname, "files", "test_clients.xlsx");
 
-  //   const response = await request(app)
-  //     .post("/client/upload")
-  //     .attach("file", filePath);
+    if (!fs.existsSync(filePath)) {
+      throw new Error(`O arquivo ${filePath} não foi encontrado!`);
+    }
 
-  //   expect(response.status).toBe(400);
-  //   expect(response.body.message).toBe("Unsupported file format");
-  // });
+    const response = await request(app)
+      .post("/client/upload")
+      .attach("file", filePath); // Simula o upload do arquivo
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Clients imported successfully");
+  });
 });
