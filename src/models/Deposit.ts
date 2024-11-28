@@ -1,11 +1,11 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../shared/connection";
+import sequelize from "../shared/connection.js";
 
 class Deposit extends Model {
   public id!: number;
   public clientId!: number;
   public operation!: Date;
-  public value!: number;
+  public DepositivValue!: number;
 }
 
 Deposit.init(
@@ -23,7 +23,7 @@ Deposit.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    value: {
+    DepositivValue: {
       type: DataTypes.DOUBLE,
       allowNull: false,
     },

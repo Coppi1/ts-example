@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const dir = "./dist"; // Diretório onde os arquivos compilados estão localizados
+const dir = "src"; // Diretório onde os arquivos compilados estão localizados
 
 function updateImports(filePath) {
   let content = fs.readFileSync(filePath, "utf8");

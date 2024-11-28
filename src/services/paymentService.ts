@@ -1,4 +1,4 @@
-import Payment from "../models/Payment";
+import Payment from "../models/Payment.js";
 
 export class PaymentService {
   public async createPayment(

@@ -4,9 +4,9 @@ import fs from "fs";
 import multer from "multer";
 import path from "path";
 import xlsx from "xlsx";
-import { connectRedis, redisClient } from "../config/redisClient";
-import Client from "../models/Client";
-import { ClientService } from "../services/clientService";
+import { connectRedis, redisClient } from "../config/redisClient.js";
+import Client from "../models/Profile.js";
+import { ClientService } from "../services/profileService.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

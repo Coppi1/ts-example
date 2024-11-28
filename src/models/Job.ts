@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../shared/connection";
-import Payment from "./Payment";
+import sequelize from "../shared/connection.js";
+import Payment from "./Payment.js";
 
 class Job extends Model {
   public id!: number;

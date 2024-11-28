@@ -1,4 +1,4 @@
-import Contract from "../models/Contract";
+import Contract from "../models/Contract.js";
 
 export class ContractService {
   public async createContract(

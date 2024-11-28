@@ -1,16 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ESNext", // Compila para JavaScript ES6
-    "module": "ESNext", // Usa ESNext para trabalhar com import/export modernos
-    "outDir": "./dist", // Diretório onde os arquivos compilados serão colocados
-    "rootDir": "./src", // Diretório raiz do código TypeScript
-    "strict": true, // Ativa todas as verificações estritas
-    "esModuleInterop": true, // Habilita a interoperabilidade entre módulos ES e CommonJS
-    "moduleResolution": "node", // Resolve módulos do node
-    "skipLibCheck": true, // Pular verificação de tipos em arquivos de declaração (.d.ts)
-    "forceConsistentCasingInFileNames": true, // Garante consistência na capitalização de nomes de arquivos
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts"], // Inclui todos os arquivos TypeScript dentro do diretório src
-  "exclude": ["node_modules"] // Exclui o diretório node_modules
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

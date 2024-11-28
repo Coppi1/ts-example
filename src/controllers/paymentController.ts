@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PaymentService } from "../services/paymentService";
+import { PaymentService } from "../services/paymentService.js";
 
 export class PaymentController {
   private paymentService: PaymentService;

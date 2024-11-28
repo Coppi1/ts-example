@@ -1,7 +1,7 @@
 import { Optional, QueryTypes } from "sequelize";
-import Job from "../models/Job";
-import Payment from "../models/Payment";
-import sequelize from "../shared/connection";
+import Job from "../models/Job.js";
+import Payment from "../models/Payment.js";
+import sequelize from "../shared/connection.js";
 
 // Definir atributos do modelo
 interface JobAttributes {

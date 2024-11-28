@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../shared/connection";
+import sequelize from "../shared/connection.js";
 
 class Contract extends Model {
   public id!: number;

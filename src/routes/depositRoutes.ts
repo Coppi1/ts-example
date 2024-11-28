@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DepositController } from "../controllers/depositController";
+import { DepositController } from "../controllers/depositController.js";
 
 const router = Router();
 const depositController = new DepositController();

@@ -1,4 +1,4 @@
-import Contractor from "../models/Contractor";
+import Contractor from "../models/Contractor.js";
 
 export class ContractorService {
   public async createContractor(nome: string): Promise<Contractor> {

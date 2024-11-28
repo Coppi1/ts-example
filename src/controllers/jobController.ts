@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { JobService } from "../services/jobService";
+import { JobService } from "../services/jobService.js";
 
 export class JobController {
   private jobService: JobService;

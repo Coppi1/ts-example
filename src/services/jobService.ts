@@ -1,5 +1,5 @@
-import Job from "../models/Job";
-import { JobRepository } from "../repositories/jobRepository";
+import Job from "../models/Job.js";
+import { JobRepository } from "../repositories/jobRepository.js";
 
 export class JobService {
   private jobRepository: JobRepository;

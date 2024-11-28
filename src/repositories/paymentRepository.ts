@@ -1,5 +1,5 @@
 import { Optional } from "sequelize";
-import Payment from "../models/Payment";
+import Payment from "../models/Payment.js";
 
 // Definir atributos do modelo
 interface PaymentAttributes {

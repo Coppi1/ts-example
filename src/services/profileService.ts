@@ -1,5 +1,5 @@
-import Client from "../models/Client";
-import Job from "../models/Job";
+import Client from "../models/Profile.js";
+import Job from "../models/Job.js";
 
 export class ClientService {
   public async createClient(

@@ -1,6 +1,6 @@
-import Client from "../models/Client";
-import Deposit from "../models/Deposit";
-import sequelize from "../shared/connection";
+import Client from "../models/Profile.js";
+import Deposit from "../models/Deposit.js";
+import sequelize from "../shared/connection.js";
 
 export class DepositService {
   public async createDeposit(
@@ -51,7 +51,7 @@ export class DepositService {
       if (deposit) {
         deposit.clientId = clientId;
         deposit.operation = operation;
-        deposit.value = value;
+        deposit.DepositivValue = value;
         await deposit.save();
         return deposit;
       }

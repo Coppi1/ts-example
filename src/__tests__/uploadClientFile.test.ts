@@ -3,7 +3,7 @@ import path from "path";
 import SequelizeMock from "sequelize-mock";
 import request from "supertest";
 import app from "../index";
-import Client from "../models/Client";
+import Client from "../models/Profile";
 import sequelize from "./../shared/connection";
 
 // Criando uma instância do mock do Sequelize

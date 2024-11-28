@@ -1,13 +1,14 @@
 import dotenv from "dotenv";
 import express from "express";
-import "./models/associations";
-import clientRoutes from "./routes/clientRoutes";
-import contractRoutes from "./routes/contractRoutes";
-import contractorRoutes from "./routes/contractorRoutes";
-import depositRoutes from "./routes/depositRoutes";
-import jobRoutes from "./routes/jobRoutes";
-import paymentRoutes from "./routes/paymentRoutes";
-import sequelize from "./shared/connection";
+import "./models/associations.js";
+import clientRoutes from "./routes/profileRoutes.js";
+import contractRoutes from "./routes/contractRoutes.js";
+import contractorRoutes from "./routes/contractorRoutes.js";
+import depositRoutes from "./routes/depositRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import sequelize from "./shared/connection.js";
+
 
 // Carrega arquivo .env
 dotenv.config();

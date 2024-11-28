@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { ContractController } from "../controllers/contractController";
-import { JobController } from "../controllers/jobController"; // Importar o JobController
+import { ContractController } from "../controllers/contractController.js";
+import { JobController } from "../controllers/jobController.js"; // Importar o JobController
 
 const router = Router();
 const contractController = new ContractController();

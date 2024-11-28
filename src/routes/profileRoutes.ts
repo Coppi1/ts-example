@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ClientController } from "../controllers/clientController";
+import { ClientController } from "../controllers/profileController.js";
 import multer from "multer";
 import path from 'path';
 

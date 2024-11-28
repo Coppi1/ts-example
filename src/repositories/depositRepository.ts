@@ -1,5 +1,5 @@
 import { Optional } from "sequelize";
-import Deposit from "../models/Deposit";
+import Deposit from "../models/Deposit.js";
 
 // Definir atributos do modelo
 interface DepositAttributes {

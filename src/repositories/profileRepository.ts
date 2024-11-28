@@ -1,5 +1,5 @@
 import { Optional } from "sequelize";
-import Client from "../models/Client";
+import Client from "../models/Profile.js";
 
 // Definir atributos do modelo
 interface ClientAttributes {

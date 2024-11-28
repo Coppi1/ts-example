@@ -1,7 +1,7 @@
 import SequelizeMock from "sequelize-mock";
 import request from "supertest";
 import app from "../index";
-import Client from "../models/Client";
+import Client from "../models/Profile";
 
 // Criando uma instância do mock do Sequelize
 const mockDB = new SequelizeMock();

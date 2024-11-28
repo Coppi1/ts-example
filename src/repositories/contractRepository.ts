@@ -1,5 +1,5 @@
 import { Optional } from "sequelize";
-import Contract from "../models/Contract";
+import Contract from "../models/Contract.js";
 
 // Definir atributos do modelo
 interface ContractAttributes {
